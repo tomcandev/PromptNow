@@ -21,6 +21,14 @@ struct HeaderView: View {
         .padding(.horizontal, Popup.horizontalPadding)
 
         ToolbarButton {
+          appState.createNewPrompt()
+        } label: {
+          Image(systemName: "plus")
+        }
+        .help("Create New Prompt (Cmd + N)")
+        .padding(.trailing, 8)
+
+        ToolbarButton {
           controller.togglePreview()
         } label: {
           Image(
