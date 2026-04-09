@@ -73,6 +73,14 @@ struct ToolbarView: View {
         Spacer()
 
         ToolbarButton {
+          appState.editSelection()
+        } label: {
+          Image(systemName: "pencil")
+        }
+        .help("Edit / Clone (Cmd + E)")
+        .padding(.trailing, 4)
+
+        ToolbarButton {
           appState.deleteSelection()
         } label: {
           Image(systemName: "trash")

@@ -43,13 +43,6 @@ struct PromptView: View {
     ) {
       VStack(alignment: .leading, spacing: 4) {
         HStack(spacing: 6) {
-          Text(verbatim: item.shortID)
-            .font(.system(.caption, design: .monospaced).weight(.medium))
-            .padding(.horizontal, 4)
-            .padding(.vertical, 2)
-            .background(.teal.opacity(0.15))
-            .foregroundStyle(.teal)
-            .clipShape(Capsule())
 
           Text(verbatim: item.title)
             .font(.system(.body, design: .default).weight(.semibold))
@@ -77,16 +70,6 @@ struct PromptView: View {
           
           // Action Buttons
           HStack(spacing: 12) {
-            Button(action: {
-              appState.promptStore.editOrClone(item)
-            }) {
-              Image(systemName: "pencil")
-                .font(.system(size: 11))
-                .foregroundStyle(.secondary)
-            }
-            .buttonStyle(.plain)
-            .help("Edit/Clone (Cmd+E)")
-            
             Button(action: {
               appState.promptStore.toggleFavorite(item)
               appState.triggerToast(message: item.item.isFavorite
