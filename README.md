@@ -23,8 +23,7 @@ We have carefully refactored Maccy's proven UI architecture to pivot from a dyna
 
 ## 🛠 Required Setup
 
-The application automatically seeds a default library of high-quality AI prompts (Development, Marketing, QA, etc.) upon first launch to help you get started.
-
+The application automatically seeds a default library of highly curated AI prompts upon first launch to help you get started. These default prompts are proudly sourced from the incredible [f/awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts) repository, an open-source community library licensed under CC0-1.0 (Public Domain). You are free to confidently use, modify, and distribute them without restrictions!
 ### Building from Source
 
 1. Clone the repository.
