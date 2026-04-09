@@ -99,6 +99,11 @@ final class AppState: Sendable {
   }
 
   @MainActor
+  func createNewPrompt() {
+    promptStore.createNew()
+  }
+
+  @MainActor
   func toggleFavoriteSelection() {
     if let item = navigator.selection.first {
       promptStore.toggleFavorite(item)

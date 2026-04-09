@@ -106,6 +106,24 @@ class PromptStore {
     }
   }
 
+  @MainActor
+  func createNew() {
+    let newPrompt = Prompt(
+      shortID: "", // Will be generated on save
+      title: "",
+      content: "",
+      tags: [],
+      category: "",
+      isFavorite: false,
+      isBuiltIn: false,
+      builtInID: nil,
+      createdAt: Date.now,
+      updatedAt: Date.now
+    )
+    Storage.shared.context.insert(newPrompt)
+    editingPrompt = newPrompt
+  }
+
   /// Saves changes to the prompt being edited
   @MainActor
   func saveEdit(title: String, content: String, tags: [String], category: String) {
@@ -115,6 +133,12 @@ class PromptStore {
     prompt.tags = tags
     prompt.category = category
     prompt.updatedAt = Date.now
+    
+    // Auto-generate semantic ID if it's empty or was randomly generated before
+    if prompt.shortID.isEmpty || prompt.shortID == "new" {
+      prompt.shortID = PromptStore.generateShortID(isBuiltIn: false, category: category, title: title)
+    }
+    
     try? Storage.shared.context.save()
     editingPrompt = nil
     Task {
@@ -124,9 +148,11 @@ class PromptStore {
 
   @MainActor
   func cancelEdit() {
-    // If we were editing a brand-new clone that hasn't been saved yet,
-    // we should consider deleting it. But since we already inserted and saved
-    // it during clone, it's better to keep it — user can always delete later.
+    // If the prompt is completely empty (like from createNew), delete it so we don't bleed zombie data
+    if let prompt = editingPrompt, prompt.title.isEmpty, prompt.content.isEmpty {
+      Storage.shared.context.delete(prompt)
+      try? Storage.shared.context.save()
+    }
     editingPrompt = nil
   }
 

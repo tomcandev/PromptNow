@@ -14,6 +14,7 @@ enum KeyChord: CaseIterable {
   case deleteOneCharFromSearch
   case deleteLastWordFromSearch
   case editCurrentItem
+  case createPrompt
   case toggleFavorite
   case ignored
   case moveToNext
@@ -78,6 +79,8 @@ enum KeyChord: CaseIterable {
       self = .moveToFirst
     case (.comma, [.command]):
       self = .openPreferences
+    case (.n, [.command]):
+      self = .createPrompt
     case (.e, [.command]):
       self = .editCurrentItem
     case (.s, [.command]):
