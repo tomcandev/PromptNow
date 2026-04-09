@@ -37,6 +37,13 @@ struct PromptListView: View {
         VStack(spacing: 0) {
           ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
             PromptView(item: item, previous: index > 0 ? items[index - 1] : nil, next: index < items.count - 1 ? items[index + 1] : nil, index: index)
+            
+            // Add a separator below the last favorited item
+            if item.item.isFavorite, index < items.count - 1, !items[index + 1].item.isFavorite {
+              Divider()
+                .padding(.horizontal, 12)
+                .padding(.vertical, 4)
+            }
           }
         }
         .padding(.top, topPadding)

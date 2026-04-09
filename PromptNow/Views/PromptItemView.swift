@@ -43,12 +43,9 @@ struct PromptView: View {
     ) {
       VStack(alignment: .leading, spacing: 4) {
         HStack(spacing: 6) {
-          if item.item.isFavorite {
-            Image(systemName: "star.fill")
-              .font(.system(size: 10))
-              .foregroundStyle(.yellow)
-          }
-          Text(verbatim: item.title).bold()
+          Text(verbatim: item.title)
+            .font(.system(.body, design: .default).weight(.semibold))
+          
           if item.item.isBuiltIn {
             Text("Built-in")
               .font(.system(size: 9, weight: .medium))
@@ -58,6 +55,7 @@ struct PromptView: View {
               .foregroundStyle(.blue)
               .clipShape(Capsule())
           }
+          
           ForEach(item.item.tags, id: \.self) { tag in
             Text(verbatim: tag)
               .font(.system(size: 10))
@@ -65,6 +63,14 @@ struct PromptView: View {
               .padding(.vertical, 2)
               .background(.secondary.opacity(0.15))
               .clipShape(Capsule())
+          }
+          
+          Spacer()
+          
+          if item.item.isFavorite {
+            Image(systemName: "star.fill")
+              .font(.system(size: 9))
+              .foregroundStyle(.yellow.opacity(0.85))
           }
         }
         Text(verbatim: item.item.content.prefix(80).trimmingCharacters(in: .whitespacesAndNewlines) + (item.item.content.count > 80 ? "..." : ""))
