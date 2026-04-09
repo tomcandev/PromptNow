@@ -4,10 +4,11 @@ import SwiftData
 @Model
 class Prompt: Codable {
   enum CodingKeys: String, CodingKey {
-    case id, title, content, tags, category, isFavorite, isBuiltIn, builtInID, createdAt, updatedAt
+    case id, shortID, title, content, tags, category, isFavorite, isBuiltIn, builtInID, createdAt, updatedAt
   }
 
   var id: UUID = UUID()
+  var shortID: String = ""
   var title: String = ""
   var content: String = ""
   var tags: [String] = []
@@ -20,6 +21,7 @@ class Prompt: Codable {
 
   init(
     id: UUID = UUID(),
+    shortID: String = "",
     title: String = "",
     content: String = "",
     tags: [String] = [],
@@ -31,6 +33,7 @@ class Prompt: Codable {
     updatedAt: Date = Date.now
   ) {
     self.id = id
+    self.shortID = shortID
     self.title = title
     self.content = content
     self.tags = tags
@@ -45,6 +48,7 @@ class Prompt: Codable {
   required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+    shortID = try container.decodeIfPresent(String.self, forKey: .shortID) ?? ""
     title = try container.decode(String.self, forKey: .title)
     content = try container.decode(String.self, forKey: .content)
     tags = try container.decodeIfPresent([String].self, forKey: .tags) ?? []
@@ -59,6 +63,7 @@ class Prompt: Codable {
   func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
     try container.encode(id, forKey: .id)
+    try container.encode(shortID, forKey: .shortID)
     try container.encode(title, forKey: .title)
     try container.encode(content, forKey: .content)
     try container.encode(tags, forKey: .tags)

@@ -87,7 +87,8 @@ class PromptStore {
     if prompt.isBuiltIn {
       // Clone the system prompt into a user-owned copy
       let clone = Prompt(
-        title: prompt.title,
+        shortID: PromptStore.generateShortID(isBuiltIn: false, category: prompt.category, title: "\(prompt.title) Copy"),
+        title: "\(prompt.title) Copy",
         content: prompt.content,
         tags: prompt.tags,
         category: prompt.category,
@@ -131,17 +132,50 @@ class PromptStore {
 
   // MARK: - Private Helpers
 
+  /// Generates a semantic slug ID like "cus-marketing-seo" logic.
+  static func generateShortID(isBuiltIn: Bool, category: String, title: String) -> String {
+    let prefix = isBuiltIn ? "sys" : "cus"
+    let safeCategory = category.lowercased().replacingOccurrences(of: "[^a-z0-9]", with: "-", options: .regularExpression)
+      .trimmingCharacters(in: CharacterSet(charactersIn: "-"))
+    let safeTitle = title.lowercased().replacingOccurrences(of: "[^a-z0-9]", with: "-", options: .regularExpression)
+      .trimmingCharacters(in: CharacterSet(charactersIn: "-"))
+    
+    // Fallbacks if strings were empty after regex
+    let catPart = safeCategory.isEmpty ? "gen" : String(safeCategory.prefix(10))
+    let titlePart = safeTitle.isEmpty ? "prompt" : String(safeTitle.prefix(20))
+    
+    // e.g. "sys-dev-act-as-linux-terminal"
+    return "\(prefix)-\(catPart)-\(titlePart)".replacingOccurrences(of: "--", with: "-")
+  }
+
   private func updateFilteredItems() {
     if searchQuery.isEmpty {
       items = all
     } else {
       let filtered = all.filter { decorator in
+        decorator.shortID.localizedCaseInsensitiveContains(searchQuery) ||
         decorator.item.title.localizedCaseInsensitiveContains(searchQuery) ||
         decorator.item.content.localizedCaseInsensitiveContains(searchQuery) ||
         decorator.item.tags.contains(where: { $0.localizedCaseInsensitiveContains(searchQuery) })
       }
-      // Re-apply favorites-first sorting even within search results
-      items = sortDecoratorsWithFavoritesFirst(filtered)
+      
+      // We want an exact or prefix match on shortID to float to the very top,
+      // above even favorites if a user explicitly searched for an ID.
+      let sortedBySearch = filtered.sorted { d1, d2 in
+        let match1 = d1.shortID.localizedCaseInsensitiveContains(searchQuery)
+        let match2 = d2.shortID.localizedCaseInsensitiveContains(searchQuery)
+        
+        if match1 && !match2 { return true }
+        if !match1 && match2 { return false }
+        
+        // Otherwise fallback to favorites -> alphabetical
+        if d1.item.isFavorite != d2.item.isFavorite {
+          return d1.item.isFavorite
+        }
+        return d1.item.title.localizedStandardCompare(d2.item.title) == .orderedAscending
+      }
+      
+      items = sortedBySearch
     }
     AppState.shared.popup.needsResize = true
   }

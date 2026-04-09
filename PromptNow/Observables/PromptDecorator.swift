@@ -13,6 +13,7 @@ class PromptDecorator: Identifiable, Hashable, HasVisibility {
   let id = UUID()
 
   var title: String = ""
+  var shortID: String { item.shortID }
   var attributedTitle: AttributedString?
 
   var isVisible: Bool = true
