@@ -1,0 +1,20 @@
+import SwiftUI
+
+struct SlideoutContentView: View {
+  @Environment(AppState.self) var appState
+
+  var body: some View {
+    VStack {
+      ToolbarView()
+
+      if let item = appState.navigator.leadPrompt {
+        PreviewItemView(item: item)
+      } else {
+        EmptyView()
+      }
+    }
+    .padding(.horizontal)
+    .padding(.bottom)
+    .padding(.top, Popup.verticalPadding)
+  }
+}

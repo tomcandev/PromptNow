@@ -1,0 +1,90 @@
+import Sauce
+import Defaults
+import SwiftUI
+
+struct KeyHandlingView<Content: View>: View {
+  @Binding var searchQuery: String
+  @FocusState.Binding var searchFocused: Bool
+  @ViewBuilder let content: () -> Content
+
+  @Environment(AppState.self) private var appState
+
+  var body: some View {
+    content()
+      .onKeyPress { _ in
+        // Unfortunately, key presses don't allow access to
+        // key code and don't properly work with multiple inputs,
+        // so pressing ⌘, on non-English layout doesn't open
+        // preferences. Stick to NSEvent to fix this behavior.
+
+        if searchFocused {
+          // Ignore input when candidate window is open
+          // https://stackoverflow.com/questions/73677444/how-to-detect-the-candidate-window-when-using-japanese-keyboard
+          if let inputClient = NSApp.keyWindow?.firstResponder as? NSTextInputClient,
+             inputClient.hasMarkedText() {
+            return .ignored
+          }
+        }
+
+        switch KeyChord(NSApp.currentEvent) {
+        case .clearSearch:
+          searchQuery = ""
+          return .handled
+        case .deleteCurrentItem:
+          appState.deleteSelection()
+          return .handled
+        case .deleteOneCharFromSearch:
+          searchFocused = true
+          _ = searchQuery.popLast()
+          return .handled
+        case .deleteLastWordFromSearch:
+          searchFocused = true
+          let newQuery = searchQuery.split(separator: " ").dropLast().joined(separator: " ")
+          if newQuery.isEmpty {
+            searchQuery = ""
+          } else {
+            searchQuery = "\(newQuery) "
+          }
+
+          return .handled
+        case .moveToNext:
+          guard NSApp.characterPickerWindow == nil else {
+            return .ignored
+          }
+
+          appState.navigator.highlightNext()
+          return .handled
+        case .moveToPrevious:
+          guard NSApp.characterPickerWindow == nil else {
+            return .ignored
+          }
+
+          appState.navigator.highlightPrevious()
+          return .handled
+        case .moveToFirst:
+          guard NSApp.characterPickerWindow == nil else {
+            return .ignored
+          }
+
+          appState.navigator.highlightFirst()
+          return .handled
+        case .openPreferences:
+          appState.openPreferences()
+          return .handled
+        case .selectCurrentItem:
+          appState.select()
+          return .handled
+        case .close:
+          appState.popup.close()
+          return .handled
+        case .togglePreview:
+          appState.preview.togglePreview()
+          return .handled
+        default:
+          ()
+        }
+
+        return .ignored
+      }
+  }
+}

@@ -1,0 +1,4 @@
+"Title" = "Storage";
+"Limit" = "Limit:";
+"SizeTooltip" = "Maximum number of prompts to keep in the library.\nDefault: 200.";
+"CurrentSizeTooltip" = "Current size on disk.";

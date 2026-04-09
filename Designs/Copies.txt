@@ -1,6 +1,6 @@
 Hello! 👋
-This is Maccy.
-Clipboard manager for Mac. 💻
+This is PromptNow.
+Prompt manager for Mac. 💻
 Search as you type. 🔍
 Open source. ⚙️
 No fluff! 😛
