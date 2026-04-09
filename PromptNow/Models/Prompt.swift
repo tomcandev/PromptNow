@@ -4,7 +4,7 @@ import SwiftData
 @Model
 class Prompt: Codable {
   enum CodingKeys: String, CodingKey {
-    case id, title, content, tags, category, isFavorite, createdAt, updatedAt
+    case id, title, content, tags, category, isFavorite, isBuiltIn, builtInID, createdAt, updatedAt
   }
 
   var id: UUID = UUID()
@@ -13,6 +13,8 @@ class Prompt: Codable {
   var tags: [String] = []
   var category: String = ""
   var isFavorite: Bool = false
+  var isBuiltIn: Bool = false
+  var builtInID: String?
   var createdAt: Date = Date.now
   var updatedAt: Date = Date.now
 
@@ -23,6 +25,8 @@ class Prompt: Codable {
     tags: [String] = [],
     category: String = "",
     isFavorite: Bool = false,
+    isBuiltIn: Bool = false,
+    builtInID: String? = nil,
     createdAt: Date = Date.now,
     updatedAt: Date = Date.now
   ) {
@@ -32,6 +36,8 @@ class Prompt: Codable {
     self.tags = tags
     self.category = category
     self.isFavorite = isFavorite
+    self.isBuiltIn = isBuiltIn
+    self.builtInID = builtInID
     self.createdAt = createdAt
     self.updatedAt = updatedAt
   }
@@ -44,6 +50,8 @@ class Prompt: Codable {
     tags = try container.decodeIfPresent([String].self, forKey: .tags) ?? []
     category = try container.decodeIfPresent(String.self, forKey: .category) ?? ""
     isFavorite = try container.decodeIfPresent(Bool.self, forKey: .isFavorite) ?? false
+    isBuiltIn = try container.decodeIfPresent(Bool.self, forKey: .isBuiltIn) ?? false
+    builtInID = try container.decodeIfPresent(String.self, forKey: .builtInID)
     createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date.now
     updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? Date.now
   }
@@ -56,6 +64,8 @@ class Prompt: Codable {
     try container.encode(tags, forKey: .tags)
     try container.encode(category, forKey: .category)
     try container.encode(isFavorite, forKey: .isFavorite)
+    try container.encode(isBuiltIn, forKey: .isBuiltIn)
+    try container.encodeIfPresent(builtInID, forKey: .builtInID)
     try container.encode(createdAt, forKey: .createdAt)
     try container.encode(updatedAt, forKey: .updatedAt)
   }

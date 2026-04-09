@@ -43,7 +43,21 @@ struct PromptView: View {
     ) {
       VStack(alignment: .leading, spacing: 4) {
         HStack(spacing: 6) {
+          if item.item.isFavorite {
+            Image(systemName: "star.fill")
+              .font(.system(size: 10))
+              .foregroundStyle(.yellow)
+          }
           Text(verbatim: item.title).bold()
+          if item.item.isBuiltIn {
+            Text("Built-in")
+              .font(.system(size: 9, weight: .medium))
+              .padding(.horizontal, 5)
+              .padding(.vertical, 1)
+              .background(.blue.opacity(0.15))
+              .foregroundStyle(.blue)
+              .clipShape(Capsule())
+          }
           ForEach(item.item.tags, id: \.self) { tag in
             Text(verbatim: tag)
               .font(.system(size: 10))

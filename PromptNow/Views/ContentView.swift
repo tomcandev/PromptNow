@@ -74,6 +74,13 @@ struct ContentView: View {
     .environment(appState)
     .environment(modifierFlags)
     .environment(\.scenePhase, scenePhase)
+    .sheet(isPresented: Binding(
+      get: { appState.promptStore.editingPrompt != nil },
+      set: { if !$0 { appState.promptStore.cancelEdit() } }
+    )) {
+      PromptEditView()
+        .environment(appState)
+    }
     // FloatingPanel is not a scene, so let's implement custom scenePhase..
     .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) {
       if let window = $0.object as? NSWindow,

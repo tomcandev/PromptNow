@@ -80,6 +80,12 @@ struct KeyHandlingView<Content: View>: View {
         case .togglePreview:
           appState.preview.togglePreview()
           return .handled
+        case .editCurrentItem:
+          appState.editSelection()
+          return .handled
+        case .toggleFavorite:
+          appState.toggleFavoriteSelection()
+          return .handled
         default:
           ()
         }

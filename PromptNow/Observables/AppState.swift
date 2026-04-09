@@ -91,6 +91,23 @@ final class AppState: Sendable {
     }
   }
 
+  @MainActor
+  func editSelection() {
+    if let item = navigator.selection.first {
+      promptStore.editOrClone(item)
+    }
+  }
+
+  @MainActor
+  func toggleFavoriteSelection() {
+    if let item = navigator.selection.first {
+      promptStore.toggleFavorite(item)
+      triggerToast(message: item.item.isFavorite
+        ? NSLocalizedString("⭐ Favorited!", comment: "")
+        : NSLocalizedString("Unfavorited", comment: ""))
+    }
+  }
+
   func openAbout() {
     about.openAbout(nil)
   }
