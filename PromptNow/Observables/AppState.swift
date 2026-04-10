@@ -94,14 +94,12 @@ final class AppState: Sendable {
   @MainActor
   func editSelection() {
     if let item = navigator.selection.first {
-      NSApp.activate(ignoringOtherApps: true)
       promptStore.editOrClone(item)
     }
   }
 
   @MainActor
   func createNewPrompt() {
-    NSApp.activate(ignoringOtherApps: true)
     promptStore.createNew()
   }
 
